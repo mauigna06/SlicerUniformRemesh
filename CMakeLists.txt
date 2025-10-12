@@ -6,7 +6,7 @@ project(SlicerUniformRemesh)
 # Extension meta-information
 set(EXTENSION_HOMEPAGE "https://www.slicer.org/wiki/Documentation/Nightly/Extensions/SlicerUniformRemesh")
 set(EXTENSION_CONTRIBUTORS "John Doe (AnyWare Corp.)")
-set(EXTENSION_DESCRIPTION "This is an example of an extension using SuperBuild to build a dependent project named Foo")
+set(EXTENSION_DESCRIPTION "This is an example of an extension using SuperBuild to build a dependent project named gpytoolbox")
 set(EXTENSION_ICONURL "https://www.example.com/Slicer/Extensions/SlicerUniformRemesh.png")
 set(EXTENSION_SCREENSHOTURLS "https://www.example.com/Slicer/Extensions/SlicerUniformRemesh/Screenshots/1.png")
 set(EXTENSION_DEPENDS "NA") # Specified as a list or "NA" if no dependencies
@@ -39,7 +39,7 @@ add_subdirectory(UniformRemesh)
 
 #-----------------------------------------------------------------------------
 set(EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS)
-#list(APPEND EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS "${Foo_DIR};Foo;RuntimeLibraries;/")
+#list(APPEND EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS "${gpytoolbox_DIR};gpytoolbox;RuntimeLibraries;/")
 set(${EXTENSION_NAME}_CPACK_INSTALL_CMAKE_PROJECTS "${EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS}" CACHE STRING "List of external projects to install" FORCE)
 
 #-----------------------------------------------------------------------------
