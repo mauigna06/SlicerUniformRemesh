@@ -12,6 +12,7 @@ set(EXTENSION_SCREENSHOTURLS "https://www.example.com/Slicer/Extensions/SlicerUn
 set(EXTENSION_DEPENDS "NA") # Specified as a list or "NA" if no dependencies
 set(EXTENSION_BUILD_SUBDIRECTORY inner-build)
 
+# set(EXTENSION_BUILD_SUBDIRECTORY inner-build)
 set(SUPERBUILD_TOPLEVEL_PROJECT inner)
 
 #-----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ add_subdirectory(UniformRemesh)
 
 #-----------------------------------------------------------------------------
 set(EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS)
-#list(APPEND EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS "${gpytoolbox_DIR};gpytoolbox;RuntimeLibraries;/")
+list(APPEND EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS "${gpytoolbox_DIR};gpytoolbox;ALL;/")
 set(${EXTENSION_NAME}_CPACK_INSTALL_CMAKE_PROJECTS "${EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS}" CACHE STRING "List of external projects to install" FORCE)
 
 #-----------------------------------------------------------------------------
