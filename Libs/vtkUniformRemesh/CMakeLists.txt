@@ -1,5 +1,7 @@
 project(vtkUniformRemesh)
 
+include(SlicerMacroPythonWrapModuleVTKLibrary)
+
 if(NOT DEFINED Eigen3_SOURCE_DIR)
   message(FATAL_ERROR "Eigen3_SOURCE_DIR is not set. Configure the superbuild to provide Eigen3.")
 endif()
@@ -99,10 +101,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Installation
 # --------------------------------------------------------------------------
 if(NOT DEFINED ${PROJECT_NAME}_INSTALL_BIN_DIR)
-  set(${PROJECT_NAME}_INSTALL_BIN_DIR ${Slicer_INSTALL_THIRDPARTY_BIN_DIR})
+  set(${PROJECT_NAME}_INSTALL_BIN_DIR ${Slicer_INSTALL_QTLOADABLEMODULES_BIN_DIR})
 endif()
 if(NOT DEFINED ${PROJECT_NAME}_INSTALL_LIB_DIR)
-  set(${PROJECT_NAME}_INSTALL_LIB_DIR ${Slicer_INSTALL_THIRDPARTY_LIB_DIR})
+  set(${PROJECT_NAME}_INSTALL_LIB_DIR ${Slicer_INSTALL_QTLOADABLEMODULES_LIB_DIR})
 endif()
 
 install(TARGETS ${PROJECT_NAME}
@@ -122,12 +124,10 @@ install(FILES
 # Python wrapping
 # --------------------------------------------------------------------------
 if(VTK_WRAP_PYTHON AND BUILD_SHARED_LIBS)
-  set(Slicer_Wrapped_LIBRARIES)
-  include(vtkMacroKitPythonWrap)
-  vtkMacroKitPythonWrap(
-    KIT_NAME ${PROJECT_NAME}
-    KIT_SRCS ${vtkUniformRemesh_SRCS}
-    KIT_INSTALL_BIN_DIR ${${PROJECT_NAME}_INSTALL_BIN_DIR}
-    KIT_INSTALL_LIB_DIR ${${PROJECT_NAME}_INSTALL_LIB_DIR}
+  SlicerMacroPythonWrapModuleVTKLibrary(
+    NAME ${PROJECT_NAME}
+    SRCS ${vtkUniformRemesh_SRCS}
+    WRAPPED_TARGET_LIBRARIES ${PROJECT_NAME}
+    RELATIVE_PYTHON_DIR "."
     )
 endif()
