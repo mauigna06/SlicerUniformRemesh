@@ -27,7 +27,7 @@
       <longflag>numberOfIterations</longflag>
       <label>Number of Iterations</label>
       <description><![CDATA[How many remeshing iterations to execute. More iterations improve uniformity but increase runtime.]]></description>
-      <default>10</default>
+      <default>3</default>
       <constraints>
         <minimum>1</minimum>
         <maximum>1000</maximum>

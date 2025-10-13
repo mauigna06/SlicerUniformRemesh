@@ -25,7 +25,7 @@ vtkStandardNewMacro(vtkUniformRemeshFilter);
 vtkUniformRemeshFilter::vtkUniformRemeshFilter()
 {
   this->TargetEdgeLength = 0.0;
-  this->NumberOfIterations = 10;
+  this->NumberOfIterations = 3;
   this->ProjectToInputSurface = false;
 
   this->SetNumberOfInputPorts(1);
