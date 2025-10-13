@@ -12,6 +12,8 @@
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 
+#include <unordered_map>
+#include <vector>
 #include <Eigen/Core>
 
 #include <igl/avg_edge_length.h>
@@ -123,7 +125,93 @@ int vtkUniformRemeshFilter::RequestData(
     targetEdge = igl::avg_edge_length(vertices, faces);
     }
 
-  remesh_botsch(vertices, faces, targetEdge, this->NumberOfIterations, this->ProjectToInputSurface);
+  std::vector<char> boundaryVertexMask(static_cast<std::size_t>(numberOfPoints), 0);
+  std::unordered_map<unsigned long long, int> edgeUseCount;
+  edgeUseCount.reserve(static_cast<std::size_t>(numberOfCells * 3));
+
+  const auto encodeEdge = [](int a, int b) -> unsigned long long
+    {
+    if (a > b)
+      {
+      std::swap(a, b);
+      }
+    return (static_cast<unsigned long long>(a) << 32) | static_cast<unsigned int>(b);
+    };
+
+  for (Eigen::Index faceId = 0; faceId < faces.rows(); ++faceId)
+    {
+    const int a = faces(faceId, 0);
+    const int b = faces(faceId, 1);
+    const int c = faces(faceId, 2);
+    ++edgeUseCount[encodeEdge(a, b)];
+    ++edgeUseCount[encodeEdge(b, c)];
+    ++edgeUseCount[encodeEdge(c, a)];
+    }
+
+  for (Eigen::Index faceId = 0; faceId < faces.rows(); ++faceId)
+    {
+    const int tri[3] = {
+      faces(faceId, 0),
+      faces(faceId, 1),
+      faces(faceId, 2) };
+    for (int edgeIndex = 0; edgeIndex < 3; ++edgeIndex)
+      {
+      const int u = tri[edgeIndex];
+      const int v = tri[(edgeIndex + 1) % 3];
+      if (edgeUseCount[encodeEdge(u, v)] == 1)
+        {
+        boundaryVertexMask[static_cast<std::size_t>(u)] = 1;
+        boundaryVertexMask[static_cast<std::size_t>(v)] = 1;
+        }
+      }
+    }
+
+  int boundaryCount = 0;
+  for (char flag : boundaryVertexMask)
+    {
+    boundaryCount += flag ? 1 : 0;
+    }
+
+  Eigen::VectorXi boundaryVertices;
+  if (boundaryCount > 0)
+    {
+    boundaryVertices.resize(boundaryCount);
+    int insertIndex = 0;
+    for (vtkIdType vertexId = 0; vertexId < numberOfPoints; ++vertexId)
+      {
+      if (boundaryVertexMask[static_cast<std::size_t>(vertexId)])
+        {
+        boundaryVertices(insertIndex++) = static_cast<int>(vertexId);
+        }
+      }
+    }
+
+  try
+    {
+    if (boundaryCount > 0)
+      {
+      remesh_botsch(vertices, faces, targetEdge, this->NumberOfIterations, boundaryVertices, this->ProjectToInputSurface);
+      }
+    else
+      {
+      remesh_botsch(vertices, faces, targetEdge, this->NumberOfIterations, this->ProjectToInputSurface);
+      }
+    }
+  catch (const std::bad_alloc& allocationError)
+    {
+    vtkErrorMacro("Remeshing failed due to memory allocation error: " << allocationError.what());
+    return 0;
+    }
+  catch (const std::exception& standardError)
+    {
+    vtkErrorMacro("Remeshing failed: " << standardError.what());
+    return 0;
+    }
+  catch (...)
+    {
+    vtkErrorMacro("Remeshing failed due to an unknown error.");
+    return 0;
+    }
 
   vtkNew<vtkPoints> remeshedPoints;
   remeshedPoints->SetNumberOfPoints(static_cast<vtkIdType>(vertices.rows()));
