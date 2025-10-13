@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>Surface Models</category>
+  <title>Uniform Remesh</title>
+  <description><![CDATA[Remesh a surface model using gpytoolbox's uniform remeshing algorithm.]]></description>
+  <version>0.1.0</version>
+  <documentation-url>https://github.com/KitwareMedical/SlicerUniformRemesh</documentation-url>
+  <license>Slicer</license>
+  <contributor>Mauro et al.</contributor>
+  <acknowledgements><![CDATA[This work integrates gpytoolbox uniform remeshing into a Slicer CLI.]]></acknowledgements>
+  <parameters>
+    <label>Remeshing Parameters</label>
+    <description><![CDATA[Controls for the uniform remeshing filter.]]></description>
+    <double>
+      <name>targetEdgeLength</name>
+      <longflag>targetEdgeLength</longflag>
+      <label>Target Edge Length</label>
+      <description><![CDATA[Desired average edge length in model units. Use 0 to estimate automatically from the input.]]></description>
+      <default>0.0</default>
+      <constraints>
+        <minimum>0.0</minimum>
+        <step>0.01</step>
+      </constraints>
+    </double>
+    <integer>
+      <name>numberOfIterations</name>
+      <longflag>numberOfIterations</longflag>
+      <label>Number of Iterations</label>
+      <description><![CDATA[How many remeshing iterations to execute. More iterations improve uniformity but increase runtime.]]></description>
+      <default>10</default>
+      <constraints>
+        <minimum>1</minimum>
+        <maximum>1000</maximum>
+        <step>1</step>
+      </constraints>
+    </integer>
+    <boolean>
+      <name>projectToInputSurface</name>
+      <longflag>projectToInputSurface</longflag>
+      <label>Project To Input Surface</label>
+      <description><![CDATA[Project remeshed vertices back to the original surface after each iteration. Recommended when working with open boundaries.]]></description>
+      <default>false</default>
+    </boolean>
+  </parameters>
+  <parameters>
+    <label>IO</label>
+    <description><![CDATA[Input/output surface models.]]></description>
+    <geometry>
+      <name>inputModel</name>
+      <label>Input Model</label>
+      <longflag>inputModel</longflag>
+      <channel>input</channel>
+      <description><![CDATA[Surface model to remesh.]]></description>
+    </geometry>
+    <geometry reference="inputModel">
+      <name>outputModel</name>
+      <label>Output Model</label>
+      <longflag>outputModel</longflag>
+      <channel>output</channel>
+      <description><![CDATA[Remeshed surface model.]]></description>
+    </geometry>
+  </parameters>
+</executable>

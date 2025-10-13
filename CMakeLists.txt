@@ -34,8 +34,9 @@ endif()
 
 #-----------------------------------------------------------------------------
 # Extension modules
-## NEXT_MODULE
 add_subdirectory(Libs)
+add_subdirectory(UniformRemesh)
+## NEXT_MODULE
 
 #-----------------------------------------------------------------------------
 set(EXTENSION_CPACK_INSTALL_CMAKE_PROJECTS)
