@@ -1,0 +1,14 @@
+#cmakedefine BUILD_SHARED_LIBS
+#ifndef BUILD_SHARED_LIBS
+#define vtkUniformRemesh_STATIC
+#endif
+
+#if defined(_WIN32) && !defined(vtkUniformRemesh_STATIC)
+# if defined(vtkUniformRemesh_EXPORTS)
+#  define vtkUniformRemesh_EXPORT __declspec(dllexport)
+# else
+#  define vtkUniformRemesh_EXPORT __declspec(dllimport)
+# endif
+#else
+# define vtkUniformRemesh_EXPORT
+#endif
