@@ -2,7 +2,7 @@ set(proj libigl)
 
 # Set dependency list
 set(${proj}_DEPENDS
-  Eigen3
+  ""
   )
 
 # Include dependent projects if any

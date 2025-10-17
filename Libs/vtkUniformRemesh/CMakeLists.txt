@@ -2,11 +2,17 @@ project(vtkUniformRemesh)
 
 include(SlicerMacroPythonWrapModuleVTKLibrary)
 
-if(NOT DEFINED Eigen3_SOURCE_DIR)
-  message(FATAL_ERROR "Eigen3_SOURCE_DIR is not set. Configure the superbuild to provide Eigen3.")
-endif()
-if(NOT EXISTS ${Eigen3_SOURCE_DIR})
-  message(FATAL_ERROR "Eigen3 source directory '${Eigen3_SOURCE_DIR}' does not exist.")
+# --------------------------------------------------------------------------
+# Find VTK's Eigen
+# --------------------------------------------------------------------------
+# VTK includes Eigen as a third-party dependency
+# When using VTK from a build tree, we need to find the source directory
+# VTK_DIR points to VTK-build, and we need VTK/ThirdParty/eigen/vtkeigen/eigen
+get_filename_component(VTK_PARENT_DIR "${VTK_DIR}" PATH)
+set(VTK_EIGEN_INCLUDE_DIR "${VTK_PARENT_DIR}/VTK/ThirdParty/eigen/vtkeigen/eigen")
+
+if(NOT EXISTS ${VTK_EIGEN_INCLUDE_DIR})
+  message(FATAL_ERROR "VTK's Eigen directory '${VTK_EIGEN_INCLUDE_DIR}' does not exist. VTK_DIR=${VTK_DIR}")
 endif()
 
 if(NOT DEFINED LIBIGL_SOURCE_DIR)
@@ -27,6 +33,8 @@ endif()
 # libigl (header-only / interface) setup
 # --------------------------------------------------------------------------
 if(NOT TARGET igl::core)
+  # Tell libigl to use VTK's Eigen
+  set(LIBIGL_EIGEN_INCLUDE_DIR ${VTK_EIGEN_INCLUDE_DIR} CACHE PATH "Eigen include directory for libigl" FORCE)
   set(LIBIGL_BUILD_TUTORIALS OFF CACHE BOOL "" FORCE)
   set(LIBIGL_BUILD_TESTS OFF CACHE BOOL "" FORCE)
   set(LIBIGL_BUILD_PYTHON OFF CACHE BOOL "" FORCE)
@@ -55,7 +63,7 @@ target_compile_features(gpytoolbox_remesh PUBLIC cxx_std_17)
 target_include_directories(gpytoolbox_remesh
   PUBLIC
     ${GPYTOOLBOX_SOURCE_DIR}/src/cpp
-    ${Eigen3_SOURCE_DIR}
+    ${VTK_EIGEN_INCLUDE_DIR}
     ${LIBIGL_SOURCE_DIR}/include
     ${LIBIGL_SOURCE_DIR}
   )

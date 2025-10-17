@@ -19,7 +19,6 @@ set(proj ${SUPERBUILD_TOPLEVEL_PROJECT})
 
 # Project dependencies
 set(${proj}_DEPENDS
-  Eigen3
   libigl
   gpytoolbox
   )
@@ -51,7 +50,6 @@ ExternalProject_Add(${proj}
     # Superbuild
     -D${EXTENSION_NAME}_SUPERBUILD:BOOL=OFF
     -DEXTENSION_SUPERBUILD_BINARY_DIR:PATH=${${EXTENSION_NAME}_BINARY_DIR}
-    -DEigen3_SOURCE_DIR:PATH=${Eigen3_SOURCE_DIR}
     -DLIBIGL_SOURCE_DIR:PATH=${libigl_SOURCE_DIR}
     -DGPYTOOLBOX_SOURCE_DIR:PATH=${gpytoolbox_SOURCE_DIR}
   DEPENDS
